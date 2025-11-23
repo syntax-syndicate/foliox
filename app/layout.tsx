@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://foliox-ashy.vercel.app/logo.png",
+        url: "https://foliox-ashy.vercel.app/og.png",
         width: 1200,
         height: 630,
         alt: "Foliox Logo",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Foliox: AI-Powered Portfolio Generator",
     description: "Turn your GitHub profile into a stunning portfolio in seconds with AI-powered insights.",
-    images: ["https://foliox-ashy.vercel.app/logo.png"],
+    images: ["https://foliox-ashy.vercel.app/og.png"],
   },
 };
 
