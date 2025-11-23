@@ -9,14 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^2.0.31",
+    "@octokit/graphql": "^9.0.3",
+    "@octokit/types": "^16.0.0",
     "@radix-ui/react-slot": "^1.2.4",
+    "ai": "^5.0.100",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.554.0",
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

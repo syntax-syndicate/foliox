@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Foliox
 
-## Getting Started
+Auto-generate developer portfolios from GitHub profiles with AI-powered summaries using Next.js, Vercel AI SDK, and Groq.
 
-First, run the development server:
+## Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+GROQ_API_KEY=your_groq_api_key
+API_KEYS=key1,key2,key3
+GITHUB_TOKEN=your_github_token  # Optional
+CACHE_ENABLED=true
+DEFAULT_CACHE_TTL=3600
+DEBUG=false
+```
 
-## Learn More
+## API Endpoints
 
-To learn more about Next.js, take a look at the following resources:
+- `GET /api/user/[username]/profile` - GitHub profile with AI-generated bio
+- `GET /api/user/[username]/projects` - Featured projects and languages
+- `GET /api/user/[username]/about` - About section
+- `GET /api/linkedin/[username]` - LinkedIn profile data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+All endpoints require `X-API-Key` header (except when `DEBUG=true`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Features
 
-## Deploy on Vercel
+- **GitHub Integration**: GraphQL API for efficient data fetching
+- **AI Generation**: Vercel AI SDK with Groq (Llama 3.3 70B Versatile) for profile summaries and SEO
+- **Smart Caching**: Next.js `unstable_cache` with tag-based revalidation
+- **Type Safety**: Full TypeScript coverage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Documentation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [IMPLEMENTATION.md](./IMPLEMENTATION.md) for detailed architecture and API documentation.
