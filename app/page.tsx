@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Github, Wand2 } from "lucide-react"
+import { FaGithub } from "react-icons/fa"
+import { FaWandMagicSparkles } from "react-icons/fa6"
 import Link from "next/link"
 import { trackEvent } from "@/lib/utils/analytics"
 
@@ -48,7 +49,7 @@ export default function LandingPage() {
             rel="noreferrer"
           >
             <Button variant="ghost" size="sm" className="gap-2">
-              <Github className="h-4 w-4" />
+              <FaGithub className="h-4 w-4" />
               <span className="hidden sm:inline">GitHub</span>
             </Button>
           </Link>
@@ -87,7 +88,7 @@ export default function LandingPage() {
               <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
               <form onSubmit={handleSubmit} className="relative flex gap-2 p-2 bg-card border border-border rounded-lg shadow-lg">
                 <div className="relative flex-1">
-                  <Github className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <FaGithub className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="github-username"
                     className="pl-9 border-0 shadow-none focus-visible:ring-0 bg-transparent h-10"
@@ -98,7 +99,7 @@ export default function LandingPage() {
                 </div>
                 <Button type="submit" disabled={!username || isLoading}>
                   {isLoading ? "Generating..." : "Generate"}
-                  {!isLoading && <Wand2 className="ml-2 h-4 w-4" />}
+                  {!isLoading && <FaWandMagicSparkles className="ml-2 h-4 w-4" />}
                 </Button>
               </form>
             </div>
