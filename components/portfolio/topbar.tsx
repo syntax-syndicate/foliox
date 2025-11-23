@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { FaArrowLeft } from "react-icons/fa"
 import Link from "next/link"
 import type { NormalizedProfile } from "@/types/github"
+import { ShareButton } from "./share-button"
 
 interface TopbarProps {
   profile: NormalizedProfile
@@ -20,8 +21,11 @@ export function Topbar({ profile }: TopbarProps) {
               <span className="hidden sm:inline">Home</span>
             </Button>
           </Link>
-          <div className="text-sm text-muted-foreground">
-            {profile.name || profile.username}
+          <div className="flex items-center gap-3">
+            <div className="text-sm text-muted-foreground hidden sm:block">
+              {profile.name || profile.username}
+            </div>
+            <ShareButton username={profile.username} />
           </div>
         </div>
       </div>

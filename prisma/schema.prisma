@@ -27,3 +27,15 @@ model Cache {
   @@index([tags])
   @@map("cache")
 }
+
+model CustomUrl {
+  id        String   @id @default(cuid())
+  customSlug String  @unique
+  githubUsername String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customSlug])
+  @@index([githubUsername])
+  @@map("custom_urls")
+}

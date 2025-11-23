@@ -266,16 +266,53 @@ export class GitHubProfileFetcher {
 
       let linkedinUrl: string | undefined;
       let twitterUrl: string | undefined;
+      let instagramUrl: string | undefined;
+
+      const extractLinkedInFromText = (text: string): string | undefined => {
+        if (!text) return undefined;
+        
+        const patterns = [
+          /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/([a-zA-Z0-9-]+)/gi,
+          /linkedin\.com\/in\/([a-zA-Z0-9-]+)/gi,
+          /\[LinkedIn\]\((https?:\/\/[^\s\)]+linkedin\.com[^\s\)]+)\)/gi,
+          /linkedin:\s*(https?:\/\/[^\s]+)/gi,
+        ];
+
+        for (const pattern of patterns) {
+          const matches = text.matchAll(pattern);
+          for (const match of matches) {
+            if (match[1]) {
+              if (match[1].startsWith('http://') || match[1].startsWith('https://')) {
+                return match[1];
+              } else if (match[1].match(/^[a-zA-Z0-9-]+$/)) {
+                return `https://www.linkedin.com/in/${match[1]}`;
+              }
+            }
+          }
+        }
+        return undefined;
+      };
+
+      if (user.bio) {
+        linkedinUrl = extractLinkedInFromText(user.bio);
+      }
 
       try {
         const readmeContent = await this.fetchReadmeContent(username);
         if (readmeContent) {
           const socialLinks = parseSocialLinksFromReadme(readmeContent);
-          linkedinUrl = socialLinks.linkedin;
-          twitterUrl = socialLinks.twitter || socialLinks.x;
+          if (!linkedinUrl) {
+            linkedinUrl = socialLinks.linkedin;
+          }
+          if (!twitterUrl) {
+            twitterUrl = socialLinks.twitter || socialLinks.x;
+          }
+          if (!instagramUrl) {
+            instagramUrl = socialLinks.instagram;
+          }
         }
-      } catch {
-        // Silently fail if README parsing fails
+      } catch (error) {
+        console.error(`Failed to parse social links from README for ${username}:`, error);
       }
 
       const normalizeWebsiteUrl = (url: string | null | undefined): string | null => {
@@ -300,6 +337,7 @@ export class GitHubProfileFetcher {
         website: normalizeWebsiteUrl(user.websiteUrl),
         twitter_username: user.twitterUsername || (twitterUrl ? new URL(twitterUrl).pathname.split('/').pop() || null : null),
         linkedin_url: linkedinUrl,
+        instagram_url: instagramUrl,
         company: user.company,
         followers: user.followers.totalCount,
         following: user.following.totalCount,

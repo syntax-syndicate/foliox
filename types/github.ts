@@ -207,6 +207,7 @@ export interface NormalizedProfile {
   website: string | null;
   twitter_username: string | null;
   linkedin_url?: string | null;
+  instagram_url?: string | null;
   company: string | null;
   followers: number;
   following: number;

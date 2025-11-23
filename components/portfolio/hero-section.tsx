@@ -1,6 +1,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { FaGithub, FaLinkedin, FaGlobe, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa"
+import { FaGithub, FaLinkedin, FaGlobe, FaEnvelope, FaMapMarkerAlt, FaInstagram } from "react-icons/fa"
 import { FaXTwitter, FaCodeBranch, FaCodePullRequest } from "react-icons/fa6"
 import type { NormalizedProfile, AboutData, GitHubMetrics } from "@/types/github"
 
@@ -10,7 +10,7 @@ interface HeroSectionProps {
   metrics?: GitHubMetrics | null
 }
 
-export function HeroSection({ profile, about, metrics }: HeroSectionProps) {
+export function HeroSection({ profile, metrics }: HeroSectionProps) {
   const initials = profile.name
     ?.split(" ")
     .map((n) => n[0])
@@ -95,6 +95,14 @@ export function HeroSection({ profile, about, metrics }: HeroSectionProps) {
                 <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer">
                   <FaLinkedin className="h-3.5 w-3.5 mr-2" />
                   LinkedIn
+                </a>
+              </Button>
+            )}
+            {profile.instagram_url && (
+              <Button variant="outline" size="sm" asChild>
+                <a href={profile.instagram_url} target="_blank" rel="noopener noreferrer">
+                  <FaInstagram className="h-3.5 w-3.5 mr-2" />
+                  Instagram
                 </a>
               </Button>
             )}

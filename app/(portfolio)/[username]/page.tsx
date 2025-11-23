@@ -5,11 +5,11 @@ import { HeroSection } from "@/components/portfolio/hero-section"
 import { CapabilitiesSection } from "@/components/portfolio/capabilities-section"
 import { WorkGallery } from "@/components/portfolio/work-gallery"
 import { ContributionGraph } from "@/components/portfolio/contribution-graph"
-import { MetricsSection } from "@/components/portfolio/metrics-section"
 import { PortfolioFooter } from "@/components/portfolio/footer"
 import type { PortfolioData } from "@/types/portfolio"
 import { createAPIClient } from "@/lib/utils/api-client"
 import { verifyUsername } from "@/lib/utils/user"
+import { getGithubUsernameByCustomSlug } from "@/lib/utils/custom-url"
 
 interface PageProps {
   params: Promise<{ username: string }>
@@ -22,17 +22,30 @@ async function fetchPortfolioData(username: string): Promise<PortfolioData | nul
   return client.getFullPortfolio(username, { revalidate: 3600 })
 }
 
+async function resolveUsername(rawUsername: string): Promise<string | null> {
+  const customGithubUsername = await getGithubUsernameByCustomSlug(rawUsername)
+  if (customGithubUsername) {
+    return customGithubUsername
+  }
+  
+  try {
+    return verifyUsername(rawUsername)
+  } catch {
+    return null
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { username: rawUsername } = await params
-  let username: string
-  try {
-    username = verifyUsername(rawUsername)
-  } catch {
+  const username = await resolveUsername(rawUsername)
+  
+  if (!username) {
     return {
       title: "Portfolio Not Found",
       description: "The requested portfolio could not be found.",
     }
   }
+  
   const data = await fetchPortfolioData(username)
 
   if (!data) {
@@ -62,12 +75,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function PortfolioPage({ params }: PageProps) {
   const { username: rawUsername } = await params
-  let username: string
-  try {
-    username = verifyUsername(rawUsername)
-  } catch {
+  const username = await resolveUsername(rawUsername)
+  
+  if (!username) {
     notFound()
   }
+  
   const data = await fetchPortfolioData(username)
 
   if (!data) {
@@ -78,7 +91,7 @@ export default async function PortfolioPage({ params }: PageProps) {
     <div className="min-h-screen bg-background">
       <Topbar profile={data.profile} />
 
-      <main className="container mx-auto px-4 max-w-5xl">
+      <main className="container mx-auto px-4 max-w-6xl">
         <HeroSection profile={data.profile} about={data.about} metrics={data.profile.metrics} />
         
         <CapabilitiesSection about={data.about} />

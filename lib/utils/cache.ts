@@ -125,7 +125,11 @@ export function createCachedFunction<T>(
   keyParts: string[],
   options: CacheOptions = {}
 ) {
-  const cacheKey = getCacheKey(...keyParts);
+  if (keyParts.length === 0) {
+    throw new Error('keyParts must contain at least one element');
+  }
+  const [prefix, ...parts] = keyParts;
+  const cacheKey = getCacheKey(prefix, ...parts);
 
   return async (): Promise<T> => {
     if (!Settings.CACHE_ENABLED) {

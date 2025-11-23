@@ -7,7 +7,6 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
   CACHE_ENABLED: z.string().default('true').transform(val => val === 'true'),
   DEFAULT_CACHE_TTL: z.string().default('3600').transform(val => parseInt(val, 10)),
-  REDIS_URL: z.string().optional(),
   DEBUG: z.string().default('false').transform(val => val === 'true'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
@@ -23,13 +22,12 @@ function validateEnv(): Env {
       DATABASE_URL: process.env.DATABASE_URL,
       CACHE_ENABLED: process.env.CACHE_ENABLED,
       DEFAULT_CACHE_TTL: process.env.DEFAULT_CACHE_TTL,
-      REDIS_URL: process.env.REDIS_URL,
       DEBUG: process.env.DEBUG,
       NODE_ENV: process.env.NODE_ENV,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const missingVars = error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join('\n');
+      const missingVars = error.issues.map(e => `${e.path.join('.')}: ${e.message}`).join('\n');
       throw new Error(`Environment validation failed:\n${missingVars}`);
     }
     throw error;
@@ -45,7 +43,6 @@ export const Settings = {
   DATABASE_URL: env.DATABASE_URL,
   CACHE_ENABLED: env.CACHE_ENABLED,
   DEFAULT_CACHE_TTL: env.DEFAULT_CACHE_TTL,
-  REDIS_URL: env.REDIS_URL,
   DEBUG: env.DEBUG,
   NODE_ENV: env.NODE_ENV,
 } as const;

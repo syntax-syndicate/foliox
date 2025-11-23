@@ -17,10 +17,10 @@ export class AIDescriptionGenerator {
       const { text } = await generateText({
         model: this.model,
         system:
-          'You are a professional technical writer specializing in developer profiles. Write clear, concise, and professional content that highlights technical achievements and expertise. Use professional language, avoid flowery prose or excessive storytelling. Focus on facts, metrics, and concrete achievements. Keep the tone professional and suitable for a portfolio website.',
+          'You are a professional technical writer specializing in developer profiles. Create impactful, compelling content that showcases achievements and expertise. Prioritize impressive metrics and concrete accomplishments. Write clear, concise, professional content that makes the developer stand out. Focus on quantifiable achievements, technical expertise, and community impact. Use professional language suitable for a portfolio website. Make every word count - highlight what makes this developer exceptional.',
         prompt,
-        temperature: 0.5,
-        maxOutputTokens: 500,
+        temperature: 0.6,
+        maxOutputTokens: 550,
       });
 
       return this.parseProfileSummary(text, profile);
@@ -53,29 +53,61 @@ export class AIDescriptionGenerator {
     const metrics = profile.metrics ? `
 PRs Merged: ${profile.metrics.prs_merged}
 PRs Open: ${profile.metrics.prs_open}
-Total Contributions: ${profile.metrics.total_contributions || 'N/A'}
+Total Contributions: ${profile.metrics.total_contributions || 0}
+Issues Opened: ${profile.metrics.issues_opened || 0}
+Issues Closed: ${profile.metrics.issues_closed || 0}
 ` : '';
 
-    return `Create a professional developer profile summary for ${profile.name || profile.username}.
+    const yearsActive = profile.created_at 
+      ? Math.floor((new Date().getTime() - new Date(profile.created_at).getTime()) / (1000 * 60 * 60 * 24 * 365))
+      : 0;
 
+    return `Create a compelling professional developer profile summary for ${profile.name || profile.username}.
+
+Profile Data:
 Bio: ${profile.bio || 'Not provided'}
 Location: ${profile.location || 'Not specified'}
 Company: ${profile.company || 'Not specified'}
 Public Repositories: ${profile.public_repos}
 Followers: ${profile.followers}
+Following: ${profile.following}
+Years Active: ${yearsActive > 0 ? yearsActive : 'N/A'}
 ${metrics}
 
-Generate professional content:
-1. Summary (2-3 sentences): A concise, professional overview highlighting their expertise, experience, and key achievements. Focus on technical skills and contributions. Avoid flowery language or excessive storytelling.
-2. Highlights (3-4 items): Concise bullet points focusing on concrete achievements and metrics. Format as: "X public repositories" or "Y followers" or "Z merged pull requests". Keep factual and professional.
-3. Skills (5-7 items): Technical skills and areas of expertise. Use professional terminology like "Software Development", "Version Control", "Open Source Contributions", etc.
+Generate impactful, professional content:
+
+1. Summary (2-3 sentences): 
+   - Start with their name and key expertise areas
+   - Highlight their most impressive achievements (repositories, contributions, community impact)
+   - Mention their focus areas (open source, specific technologies, or development practices)
+   - Keep it professional, concise, and impactful
+   - Example format: "[Name] is a skilled developer with expertise in [areas]. With [X] public repositories and [Y] contributions, [they] have made significant impact in [domain]. [Their] work focuses on [specific focus]."
+
+2. Highlights (4 items - prioritize most impressive metrics):
+   - Always include: "${profile.public_repos} public repositories" (if > 0)
+   - Always include: "${profile.followers} followers" (if > 0)
+   - Include merged PRs if available: "${profile.metrics?.prs_merged || 0} merged pull requests" (if > 0)
+   - Include total contributions if available: "${profile.metrics?.total_contributions || 0} total contributions" (if > 0)
+   - If metrics are missing, use: "Active in open source community" or "Based in ${profile.location}" (if location exists)
+   - Keep format consistent: "X [metric]" - no extra words
+
+3. Skills (6-8 items - based on their activity):
+   - Always include: "Software Development"
+   - Always include: "Version Control" or "Git"
+   - Always include: "Open Source Contributions"
+   - If PRs merged > 0: "Collaborative Development"
+   - If repositories > 20: "Project Management" or "Repository Management"
+   - If contributions > 100: "Community Engagement"
+   - If company exists: "Enterprise Development" or "Professional Software Engineering"
+   - Add relevant technical skills based on their bio/activity
+   - Use professional terminology, avoid generic terms
 
 IMPORTANT: Return ONLY valid JSON. Do not include markdown code blocks, explanations, or any text outside the JSON object. Start with { and end with }.
 
 {
-  "summary": "Professional 2-3 sentence summary...",
-  "highlights": ["Concise highlight 1", "Concise highlight 2"],
-  "skills": ["Skill 1", "Skill 2", ...]
+  "summary": "Professional 2-3 sentence summary with name, expertise, and key achievements...",
+  "highlights": ["X public repositories", "Y followers", "Z merged pull requests", "W total contributions"],
+  "skills": ["Software Development", "Version Control", "Open Source Contributions", ...]
 }`;
   }
 
