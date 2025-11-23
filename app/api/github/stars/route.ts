@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server"
 import { Settings } from "@/lib/config/settings"
-import { createCachedFunction } from "@/lib/utils/cache"
 
 const REPO_OWNER = "kartiklabhshetwar"
 const REPO_NAME = "foliox"
-const CACHE_TTL = 300
 
 async function fetchGitHubStars(): Promise<number> {
   const headers: HeadersInit = {
     Accept: "application/vnd.github.v3+json",
+    "User-Agent": "Foliox/1.0",
   }
 
   if (Settings.GITHUB_TOKEN) {
@@ -19,7 +18,7 @@ async function fetchGitHubStars(): Promise<number> {
     `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`,
     {
       headers,
-      next: { revalidate: CACHE_TTL },
+      cache: "no-store",
     }
   )
 
@@ -35,22 +34,17 @@ async function fetchGitHubStars(): Promise<number> {
   return stars
 }
 
-function getCachedStars() {
-  const cachedFn = createCachedFunction(
-    () => fetchGitHubStars(),
-    ["github_stars", REPO_OWNER, REPO_NAME],
-    {
-      ttl: CACHE_TTL,
-      tags: ["github_stars", `repo:${REPO_OWNER}/${REPO_NAME}`],
-    }
-  )
-  return cachedFn()
-}
-
 export async function GET() {
   try {
-    const stars = await getCachedStars()
-    return NextResponse.json({ stars }, { status: 200 })
+    const stars = await fetchGitHubStars()
+    return NextResponse.json({ stars }, { 
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+      },
+    })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error"
     
@@ -58,7 +52,14 @@ export async function GET() {
       console.error("Failed to fetch GitHub stars:", errorMessage)
     }
 
-    return NextResponse.json({ stars: 0 }, { status: 200 })
+    return NextResponse.json({ stars: 0 }, { 
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+      },
+    })
   }
 }
 
