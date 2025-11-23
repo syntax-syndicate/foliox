@@ -75,10 +75,10 @@ export default function LandingPage() {
 
             <p className="text-center text-sm text-muted-foreground mt-4">
               Try: <button 
-                onClick={() => setUsername("atharvamhaske")}
+                onClick={() => setUsername("KartikLabhshetwar")}
                 className="text-primary hover:underline font-medium"
               >
-                atharvamhaske
+                KartikLabhshetwar
               </button>
             </p>
           </div>

@@ -79,23 +79,16 @@ export default async function PortfolioPage({ params }: PageProps) {
       <Topbar profile={data.profile} />
 
       <main className="container mx-auto px-4 max-w-6xl">
-        <HeroSection profile={data.profile} about={data.about} />
+        <HeroSection profile={data.profile} about={data.about} metrics={data.profile.metrics} />
         
         <CapabilitiesSection about={data.about} />
         
-        {data.profile.metrics && (
-          <MetricsSection 
-            metrics={data.profile.metrics} 
-            publicRepos={data.profile.public_repos}
-            followers={data.profile.followers}
-          />
-        )}
-        
         <WorkGallery projects={data.projects} />
-        
+
         {data.projects && data.projects.featured.length > 0 && (
           <ContributionGraph username={username} />
         )}
+       
       </main>
 
       <PortfolioFooter profile={data.profile} />

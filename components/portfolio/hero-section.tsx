@@ -1,15 +1,16 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { FaGithub, FaLinkedin, FaGlobe, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa"
-import { FaXTwitter } from "react-icons/fa6"
-import type { NormalizedProfile, AboutData } from "@/types/github"
+import { FaXTwitter, FaCodeBranch, FaCodePullRequest } from "react-icons/fa6"
+import type { NormalizedProfile, AboutData, GitHubMetrics } from "@/types/github"
 
 interface HeroSectionProps {
   profile: NormalizedProfile
   about?: AboutData | null
+  metrics?: GitHubMetrics | null
 }
 
-export function HeroSection({ profile, about }: HeroSectionProps) {
+export function HeroSection({ profile, about, metrics }: HeroSectionProps) {
   const initials = profile.name
     ?.split(" ")
     .map((n) => n[0])
@@ -58,6 +59,29 @@ export function HeroSection({ profile, about }: HeroSectionProps) {
               <span>{profile.following} following</span>
             )}
           </div>
+
+          {metrics && (
+            <div className="flex gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-chart-1/10 border border-border">
+                <div className="w-8 h-8 rounded-md bg-chart-1/20 flex items-center justify-center">
+                  <FaCodeBranch className="h-4 w-4 text-chart-1" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-foreground">{metrics.prs_merged.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">PRs Merged</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-chart-2/10 border border-border">
+                <div className="w-8 h-8 rounded-md bg-chart-2/20 flex items-center justify-center">
+                  <FaCodePullRequest className="h-4 w-4 text-chart-2" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-foreground">{metrics.prs_open.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">Open PRs</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" asChild>
