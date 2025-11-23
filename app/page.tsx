@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { FaGithub } from "react-icons/fa"
-import { FaWandMagicSparkles } from "react-icons/fa6"
 import { FaMapMarkerAlt, FaBuilding, FaUsers } from "react-icons/fa"
 import Link from "next/link"
 import { trackEvent } from "@/lib/utils/analytics"
@@ -81,24 +80,33 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen text-foreground flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border/20 backdrop-blur-xl bg-background/10 sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <span className="text-xl text-foreground font-bold">
+      {/* Floating Header */}
+      <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-[826px] px-4">
+        <div className="flex w-full flex-row items-center justify-between gap-3 rounded-full border border-white/20 px-3 py-2.5 backdrop-blur-lg bg-white/10 transition-colors duration-1000 md:gap-4 md:px-3.5 md:py-3">
+          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity ml-2.5 md:ml-3">
+            <span className="text-lg md:text-xl text-white font-bold">
               <span className="font-[var(--font-playfair)] italic font-normal">folio</span>
               <span className="font-sans">x</span>
             </span>
           </Link>
-          <Link 
-            href="https://github.com/kartiklabhshetwar/foliox" 
-            target="_blank" 
+
+          <Link
+            href="https://github.com/kartiklabhshetwar/foliox"
+            target="_blank"
             rel="noreferrer"
+            className="hidden md:flex items-center justify-center gap-1 outline-none transition-colors border border-transparent text-white px-2.5 py-1.5 rounded-full bg-gray-900 hover:bg-gray-700 active:bg-gray-600 text-xs md:text-sm lg:px-4 lg:py-2.5 lg:text-base tracking-normal whitespace-nowrap cursor-pointer"
           >
-            <Button variant="ghost" size="sm" className="gap-2">
-              <FaGithub className="h-4 w-4" />
-              <span className="hidden sm:inline">GitHub</span>
-            </Button>
+            <FaGithub className="h-4 w-4" />
+            GitHub
+          </Link>
+
+          <Link
+            href="https://github.com/kartiklabhshetwar/foliox"
+            target="_blank"
+            rel="noreferrer"
+            className="md:hidden flex items-center justify-center gap-1 outline-none transition-colors border border-transparent text-white px-2.5 py-1.5 rounded-full bg-gray-900 hover:bg-gray-700 active:bg-gray-600 text-xs tracking-normal whitespace-nowrap cursor-pointer mr-2.5"
+          >
+            <FaGithub className="h-4 w-4" />
           </Link>
         </div>
       </header>
@@ -109,14 +117,14 @@ export default function LandingPage() {
           {/* Background Image */}
           <Image
             alt="Background image"
-            src="/bg.png"
+            src="/bg.jpg"
             fill
             priority
             className="absolute inset-0 h-full w-full object-cover blur-[2px] transition-opacity duration-1000 opacity-100"
             style={{ objectFit: "cover" }}
           />
 
-          <div className="relative flex min-h-[100dvh] w-full px-5 md:px-[50px]">
+          <div className="relative flex min-h-[100dvh] w-full px-5 md:px-[50px] pt-20">
             <div className="flex w-full items-center justify-center">
               <div className="flex w-full flex-col items-center justify-center">
                 <div className="z-10 flex w-full max-w-[826px] flex-col items-center justify-center gap-8 md:gap-[50px]">
@@ -149,9 +157,8 @@ export default function LandingPage() {
                           disabled={isLoading}
                         />
                       </div>
-                      <Button type="submit" disabled={!username || isLoading}>
+                      <Button type="submit" className="rounded-3xl" disabled={!username || isLoading}>
                         {isLoading ? "Generating..." : "Generate"}
-                        {!isLoading && <FaWandMagicSparkles className="ml-2 h-4 w-4" />}
                       </Button>
                     </form>
                   </div>
