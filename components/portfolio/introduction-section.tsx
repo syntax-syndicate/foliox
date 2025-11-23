@@ -63,8 +63,8 @@ export function IntroductionSection({ profile }: IntroductionSectionProps) {
           <Image
             src="/logo.png"
             alt="Foliox"
-            width={56}
-            height={56}
+            width={64}
+            height={64}
             className="h-14 w-14 object-contain"
             priority
           />
