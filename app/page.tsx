@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import { FaMapMarkerAlt, FaBuilding, FaUsers } from "react-icons/fa"
 import { FaStar } from "react-icons/fa"
 import Link from "next/link"
 import { trackEvent } from "@/lib/utils/analytics"
+import { useDebounce } from "@/lib/utils/debounce"
 import type { NormalizedProfile } from "@/types/github"
 
 export default function LandingPage() {
@@ -61,22 +62,37 @@ export default function LandingPage() {
     return () => clearInterval(timer)
   }, [starCount])
 
+  const debouncedUsername = useDebounce(username.trim(), 500)
+  const abortControllerRef = useRef<AbortController | null>(null)
+
   useEffect(() => {
-    const trimmedUsername = username.trim()
-    
-    if (!trimmedUsername || trimmedUsername.length < 1) {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+
+    if (!debouncedUsername || debouncedUsername.length < 1) {
       setPreviewUser(null)
+      setIsFetchingPreview(false)
       return
     }
 
-    const timeoutId = setTimeout(async () => {
-      setIsFetchingPreview(true)
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+
+    setIsFetchingPreview(true)
+
+    const fetchPreview = async () => {
       try {
-        const response = await fetch(`https://api.github.com/users/${trimmedUsername}`, {
+        const response = await fetch(`https://api.github.com/users/${debouncedUsername}`, {
           headers: {
             Accept: "application/vnd.github+json",
           },
+          signal: abortController.signal,
         })
+
+        if (abortController.signal.aborted) {
+          return
+        }
 
         if (response.ok) {
           const data = await response.json()
@@ -98,15 +114,24 @@ export default function LandingPage() {
         } else {
           setPreviewUser(null)
         }
-      } catch {
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          return
+        }
         setPreviewUser(null)
       } finally {
-        setIsFetchingPreview(false)
+        if (!abortController.signal.aborted) {
+          setIsFetchingPreview(false)
+        }
       }
-    }, 500)
+    }
 
-    return () => clearTimeout(timeoutId)
-  }, [username])
+    fetchPreview()
+
+    return () => {
+      abortController.abort()
+    }
+  }, [debouncedUsername])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
