@@ -1,6 +1,7 @@
 "use client"
 
-import { Moon, Sun, Palette, LayoutGrid, LayoutList } from "lucide-react"
+import { FaPalette, FaList, FaMoon, FaSun } from "react-icons/fa6"
+import { FaTh } from "react-icons/fa"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -8,6 +9,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { useMemo, useState } from "react"
 import { useTheme } from "next-themes"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
@@ -92,62 +98,79 @@ export function PortfolioControls() {
     <div className="flex items-center gap-2">
       <div className="hidden sm:flex items-center gap-1 bg-background/50 backdrop-blur-sm p-1 rounded-full border border-border">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-full h-7 px-3 gap-1.5"
-              title="Select Theme"
-            >
-              <Palette className="h-3.5 w-3.5" />
-              <span className="text-xs font-medium">{currentThemeLabel}</span>
-            </Button>
-          </DropdownMenuTrigger>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full h-7 px-3 gap-1.5"
+                >
+                  <FaPalette className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium">{currentThemeLabel}</span>
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent icon={FaPalette}>
+              Select Theme
+            </TooltipContent>
+          </Tooltip>
           <DropdownMenuContent align="end" className="w-40">
             {THEME_FAMILIES.map((themeFamily) => (
-                        <DropdownMenuItem
-            key={themeFamily.value}
-            onClick={() => selectThemeFamily(themeFamily.value)}
-            className={`cursor-pointer ${selectedTheme === themeFamily.value ? "bg-primary text-primary-foreground font-semibold" : ""}`}
-          >
-            {themeFamily.label}
-          </DropdownMenuItem>
-
+              <DropdownMenuItem
+                key={themeFamily.value}
+                onClick={() => selectThemeFamily(themeFamily.value)}
+                className={`cursor-pointer ${selectedTheme === themeFamily.value ? "bg-primary text-primary-foreground font-semibold" : ""}`}
+              >
+                {themeFamily.label}
+              </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
       <div className="flex items-center gap-1 bg-background/50 backdrop-blur-sm p-1 rounded-full border border-border">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleLayout}
-          title={currentLayout === "classic" ? "Switch to Bento Layout" : "Switch to Classic Layout"}
-          className="rounded-full h-7 w-7"
-        >
-          {currentLayout === "classic" ? (
-            <LayoutGrid className="h-3.5 w-3.5" />
-          ) : (
-            <LayoutList className="h-3.5 w-3.5" />
-          )}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLayout}
+              className="rounded-full h-7 w-7"
+            >
+              {currentLayout === "classic" ? (
+                <FaTh className="h-3.5 w-3.5" />
+              ) : (
+                <FaList className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent icon={currentLayout === "classic" ? FaTh : FaList}>
+            {currentLayout === "classic" ? "Switch to Bento Layout" : "Switch to Classic Layout"}
+          </TooltipContent>
+        </Tooltip>
       </div>
 
       <div className="flex items-center gap-1 bg-background/50 backdrop-blur-sm p-1 rounded-full border border-border">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleLightDark}
-          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          className="rounded-full h-7 w-7"
-        >
-          {isDark ? (
-            <Moon className="h-3.5 w-3.5" />
-          ) : (
-            <Sun className="h-3.5 w-3.5" />
-          )}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLightDark}
+              className="rounded-full h-7 w-7"
+            >
+              {isDark ? (
+                <FaMoon className="h-3.5 w-3.5" />
+              ) : (
+                <FaSun className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent icon={isDark ? FaMoon : FaSun}>
+            {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   )
